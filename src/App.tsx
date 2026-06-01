@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from "react";
-import { Box, Check, LineChart, Languages } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Box, Check, LineChart, Languages, Play, Pause } from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -490,6 +490,41 @@ function Dashboard() {
 
 export default function App() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [isTranslated, setIsTranslated] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
+  const [videoCurrentTime, setVideoCurrentTime] = useState(0);
+  const [videoDuration, setVideoDuration] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const toggleVideo = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      video.play();
+      setIsVideoPlaying(true);
+    } else {
+      video.pause();
+      setIsVideoPlaying(false);
+    }
+  };
+
+  const formatTime = (s: number) => {
+    if (!s || isNaN(s)) return "0:00";
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec.toString().padStart(2, "0")}`;
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const time = ratio * videoDuration;
+    if (videoRef.current) {
+      videoRef.current.currentTime = time;
+      setVideoCurrentTime(time);
+    }
+  };
 
   useEffect(() => {
     // Add reveal class dynamically to children we want to animate
@@ -574,22 +609,24 @@ export default function App() {
                 The rest washes into drainage channels with every shower.
               </p>
 
-              <blockquote className="border-l-4 border-[#0D9762] pl-6 py-2 mb-12 relative group">
-                <div className="relative mb-3">
-                  <p className="text-[19px] md:text-[21px] font-medium italic text-[#11141B] leading-snug transition-opacity duration-300 group-hover:opacity-0">
+              <blockquote className="border-l-4 border-[#0D9762] pl-6 py-2 mb-12 relative">
+                <div className="relative mb-3" style={{ minHeight: "3.5rem" }}>
+                  <p className={`text-[19px] md:text-[21px] font-medium italic text-[#11141B] leading-snug transition-opacity duration-300 ${isTranslated ? "opacity-0" : "opacity-100"}`}>
                     "Rata-rata banjir terjadi akibat saluran yang tersumbat oleh sampah."
                   </p>
-                  <p className="absolute top-0 left-0 w-full text-[19px] md:text-[21px] font-medium italic text-[#0D9762] leading-snug transition-opacity duration-300 opacity-0 group-hover:opacity-100 pointer-events-none">
+                  <p className={`absolute top-0 left-0 w-full text-[19px] md:text-[21px] font-medium italic text-[#0D9762] leading-snug transition-opacity duration-300 pointer-events-none ${isTranslated ? "opacity-100" : "opacity-0"}`}>
                     "Flooding occurs because drainage channels are blocked by waste."
                   </p>
                 </div>
                 <footer className="text-[14px] text-[#64748B] flex items-center flex-wrap gap-x-4 gap-y-2">
                   <span>— Citra Indah Yulianty, Head of DPUPR Depok, 4 March 2025</span>
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 group-hover:bg-[#E7F6EC] text-gray-500 group-hover:text-[#0D9762] rounded-md text-[11px] font-medium transition-colors cursor-pointer">
+                  <button
+                    onClick={() => setIsTranslated(!isTranslated)}
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors cursor-pointer ${isTranslated ? "bg-[#E7F6EC] text-[#0D9762]" : "bg-gray-100 text-gray-500 hover:bg-[#E7F6EC] hover:text-[#0D9762]"}`}
+                  >
                     <Languages className="w-3.5 h-3.5" />
-                    <span className="group-hover:hidden">Translate</span>
-                    <span className="hidden group-hover:inline">Translated to English</span>
-                  </div>
+                    <span>{isTranslated ? "Translated to English" : "Translate"}</span>
+                  </button>
                 </footer>
               </blockquote>
 
@@ -732,10 +769,70 @@ export default function App() {
           </p>
         </div>
 
-        {/* Full width photo */}
-        <div className="w-full h-[50vh] md:h-[70vh] bg-[#EFECE6] relative mb-20 md:mb-24 reveal">
-          <div className="photo-placeholder absolute inset-0 flex items-center justify-center text-[#64748B] text-[14px] font-mono border-y border-dashed border-gray-400 text-center px-4 bg-[#E5E1D8]">
-            [PHOTO: SOL-01 — Kali Guard structure installed, wide shot, cinematic crop]
+        {/* Video — contained, aspect-ratio-preserving */}
+        <div className="w-full mb-20 md:mb-24 reveal">
+          <div className="max-w-[1200px] mx-auto px-6 md:px-12">
+            <div
+              className="relative bg-black rounded-2xl overflow-hidden group/video cursor-pointer"
+              onClick={toggleVideo}
+            >
+              <video
+                ref={videoRef}
+                src="/video.MOV"
+                className="w-full h-auto block"
+                autoPlay
+                muted
+                loop
+                playsInline
+                onTimeUpdate={() => videoRef.current && setVideoCurrentTime(videoRef.current.currentTime)}
+                onLoadedMetadata={() => videoRef.current && setVideoDuration(videoRef.current.duration)}
+              />
+
+              {/* Big centered play button — only when paused */}
+              {!isVideoPlaying && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-14 h-14 md:w-18 md:h-18 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/25 shadow-xl">
+                    <Play className="w-6 h-6 md:w-8 md:h-8 text-white fill-white translate-x-0.5" />
+                  </div>
+                </div>
+              )}
+
+              {/* Bottom control bar — hidden when playing, shown on hover or when paused */}
+              <div
+                className={`absolute bottom-0 left-0 right-0 px-4 pt-8 pb-3 bg-gradient-to-t from-black/75 to-transparent transition-opacity duration-300 ${
+                  isVideoPlaying ? "opacity-0 group-hover/video:opacity-100" : "opacity-100"
+                }`}
+              >
+                {/* Seek bar */}
+                <div
+                  className="relative h-[3px] bg-white/30 rounded-full mb-3 cursor-pointer group/seek"
+                  onClick={handleSeek}
+                >
+                  <div
+                    className="h-full bg-white rounded-full relative"
+                    style={{ width: `${videoDuration ? (videoCurrentTime / videoDuration) * 100 : 0}%` }}
+                  >
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-md opacity-0 group-hover/seek:opacity-100 transition-opacity" />
+                  </div>
+                </div>
+
+                {/* Controls row */}
+                <div className="flex items-center gap-3" onClick={e => e.stopPropagation()}>
+                  <button
+                    onClick={toggleVideo}
+                    className="text-white hover:text-white/80 transition-colors flex items-center"
+                  >
+                    {isVideoPlaying
+                      ? <Pause className="w-4 h-4 fill-white" />
+                      : <Play className="w-4 h-4 fill-white translate-x-px" />
+                    }
+                  </button>
+                  <span className="text-white/90 text-[11px] font-mono tracking-wide tabular-nums">
+                    {formatTime(videoCurrentTime)} / {formatTime(videoDuration)}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -975,10 +1072,19 @@ export default function App() {
           </div>
         </div>
 
-        <div className="w-full h-[50vh] md:h-[60vh] bg-[#EFECE6] relative mb-24 md:mb-0 reveal">
-          <div className="photo-placeholder absolute inset-0 flex items-center justify-center text-[#64748B] text-[14px] font-mono border-y border-dashed border-gray-400 text-center px-4 bg-[#E5E1D8]">
-            [PHOTO: IMP-01 — Community near Kali Cabang Timur]
+        <div className="w-full mb-24 md:mb-0">
+          <div className="w-full h-[50vh] md:h-[60vh] bg-[#EFECE6] relative reveal flex overflow-hidden">
+            <div className="flex-1 overflow-hidden">
+              <img src="/comm1.JPG.jpeg" alt="Community near Kali Cabang Timur" className="w-full h-full object-cover" />
+            </div>
+            <div className="w-px bg-white/30 shrink-0"></div>
+            <div className="flex-1 overflow-hidden">
+              <img src="/comm2.JPG.jpeg" alt="Community near Kali Cabang Timur" className="w-full h-full object-cover" />
+            </div>
           </div>
+          <p className="text-center text-[13px] text-[#64748B] font-medium mt-4 px-6 tracking-wide">
+            Pancoran Mas, Depok, Indonesia — the community Kali Guard was built for.
+          </p>
         </div>
       </section>
 
@@ -1206,7 +1312,7 @@ export default function App() {
         <div className="max-w-[1200px] w-full mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
             <div className="flex flex-col reveal text-center md:text-left">
-              <h2 className="text-3xl font-serif font-bold mb-2">KALI GUARD</h2>
+              <img src="/footerlogo.png" alt="Kali Guard" className="h-10 w-auto mb-2 mx-auto md:mx-0 object-contain" />
               <p className="text-white/60 text-[14px]">Bamboo · Community · Clean Rivers · Resilient Depok</p>
             </div>
             <div className="flex items-center md:justify-center reveal">
