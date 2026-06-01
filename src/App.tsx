@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { Box, Check, LineChart, Languages, Play, Pause } from "lucide-react";
+import { Box, Check, LineChart, Languages, Play, Pause, Volume2, VolumeX, Maximize, Minimize } from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -14,6 +14,8 @@ import {
   ReferenceLine,
 } from "recharts";
 import SiteNavbar from "./components/SiteNavbar";
+import { useLanguage } from "./LanguageContext";
+import { translations } from "./translations";
 
 const wasteChartData = [
   { name: "Aug", current: 520, previous: 410 },
@@ -23,30 +25,48 @@ const wasteChartData = [
   { name: "Dec", current: 850, previous: 550 },
 ];
 
+
 function Dashboard() {
+  const { lang } = useLanguage();
+  const t = translations[lang];
+  const d = t.dash;
+
+  const loopSteps = [
+    { step: "01", label: d.loop_step1, value: "1,847 kg" },
+    { step: "02", label: d.loop_step2, value: "1,243 kg" },
+    { step: "03", label: d.loop_step3, value: "Rp 4.85M" },
+    { step: "04", label: d.loop_step4, value: "3 months" },
+  ];
+
+  const projItems = [
+    { label: d.proj_waste,     value: "~500 kg/mo" },
+    { label: d.proj_revenue,   value: "Rp 3–4.5M/mo" },
+    { label: d.proj_breakeven, value: "Month 2" },
+    { label: d.proj_plastic,   value: "~3,000 kg" },
+    { label: d.proj_sorter,    value: "Rp 18–27M" },
+    { label: d.proj_flood,     value: "4 → 0–1" },
+    { label: d.proj_traps,     value: "3 pilots" },
+  ];
+
   return (
     <div className="h-full bg-gray-50/50 flex flex-col overflow-y-auto md:overflow-hidden pt-16 md:pt-20">
       <main className="flex-1 px-4 md:px-8 pt-0 pb-4 md:px-12 md:pb-6 max-w-[1600px] w-full mx-auto flex flex-col shrink-0 md:min-h-0">
         <header className="mb-2 shrink-0 flex items-start justify-between">
           <div>
             <h1 className="text-2xl md:text-[26px] font-semibold text-[#11141B] tracking-tight mb-1">
-              Dashboard
+              {d.title}
             </h1>
             <p className="text-[13px] md:text-[14px] text-[#11141B]/70 tracking-wide">
               Kali Guard{" "}
-              <span className="font-medium text-[#11141B]">
-                Track trap performance, community income, and flood reduction
-              </span>{" "}
-              in real time.
+              <span className="font-medium text-[#11141B]">{d.subtitle_track}</span>{" "}
+              {d.subtitle_realtime}
             </p>
           </div>
-          <div className="bg-white backdrop-blur-xl border border-gray-200 px-3.5 py-2 rounded-full text-[14px] flex items-center gap-1.5 shadow-sm mt-1">
-            <span className="text-[#475569] font-bold tracking-tight">
-              Protected:
-            </span>
-            <span className="text-[#0e633a] font-bold tracking-tight">
-              603 families
-            </span>
+          <div className="flex items-center gap-2 mt-1">
+            <div className="bg-white backdrop-blur-xl border border-gray-200 px-3.5 py-2 rounded-full text-[14px] flex items-center gap-1.5 shadow-sm">
+              <span className="text-[#475569] font-bold tracking-tight">{d.protected}</span>
+              <span className="text-[#0e633a] font-bold tracking-tight">603 families</span>
+            </div>
           </div>
         </header>
 
@@ -55,35 +75,19 @@ function Dashboard() {
           <div className="bg-white border border-gray-200 rounded-[1.6rem] lg:rounded-[1.8rem] p-4 lg:p-5 shadow-sm flex flex-col min-h-[220px] md:h-full md:min-h-0 overflow-hidden">
             <div className="mb-2 lg:mb-3 shrink-0">
               <span className="text-[11px] md:text-[12px] font-bold tracking-[0.1em] text-[#64748B] uppercase">
-                Overview
+                {d.card1_label}
               </span>
             </div>
-
             <p className="text-[12px] lg:text-[13px] text-[#11141B]/80 leading-relaxed mb-3 shrink-0">
-              Live operations and impact metrics for the bamboo-and-net litter
-              trap on Kali Cabang Timur, Depok. Intercepting river waste to
-              prevent flooding for 603 low-income families.
+              {d.card1_body}
             </p>
-
             <div className="flex-1 min-h-[60px] bg-white/30 backdrop-blur-xl border border-white/50 shadow-inner rounded-xl flex items-center justify-center">
               <div className="flex items-center gap-2 text-[#64748B] font-medium text-[12px] lg:text-[13px]">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-map"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-map">
                   <path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" />
-                  <path d="M15 5.764v15" />
-                  <path d="M9 3.236v15" />
+                  <path d="M15 5.764v15" /><path d="M9 3.236v15" />
                 </svg>
-                Map Placeholder
+                {d.map_placeholder}
               </div>
             </div>
           </div>
@@ -96,143 +100,58 @@ function Dashboard() {
                   <LineChart className="w-4 h-4 lg:w-5 lg:h-5 text-[#11141B]" />
                 </div>
                 <span className="text-[14px] lg:text-[16px] font-semibold text-[#11141B]">
-                  Waste Captured (Kg)
+                  {d.card2_label}
                 </span>
               </div>
               <div className="flex items-center bg-white backdrop-blur-md border border-gray-200 shadow-sm px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-full text-[11px] lg:text-[12px] font-semibold text-[#11141B]">
-                Trap 1
+                {d.trap1}
               </div>
             </div>
 
             <div className="flex-1 flex gap-2 lg:gap-3 min-h-0">
-              {/* Chart Side */}
               <div className="flex-1 min-h-0 relative -ml-4 -mb-1">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart
-                    data={wasteChartData}
-                    margin={{ top: 35, right: 10, left: 10, bottom: 0 }}
-                  >
+                  <AreaChart data={wasteChartData} margin={{ top: 35, right: 10, left: 10, bottom: 0 }}>
                     <defs>
-                      <pattern
-                        id="hatch"
-                        patternUnits="userSpaceOnUse"
-                        width="4"
-                        height="4"
-                      >
-                        <path
-                          d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2"
-                          style={{
-                            stroke: "#0D9762",
-                            strokeWidth: 1,
-                            opacity: 0.3,
-                          }}
-                        />
+                      <pattern id="hatch" patternUnits="userSpaceOnUse" width="4" height="4">
+                        <path d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2" style={{ stroke: "#0D9762", strokeWidth: 1, opacity: 0.3 }} />
                       </pattern>
                     </defs>
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      vertical={true}
-                      horizontal={false}
-                      stroke="#e8eaef"
-                    />
-                    <ReferenceLine
-                      y={500}
-                      stroke="#D08226"
-                      strokeDasharray="4 4"
-                      label={{
-                        value: "500 kg",
-                        fill: "#D08226",
-                        fontSize: 10,
-                        position: "insideBottomLeft",
-                        offset: 5,
-                      }}
-                    />
-                    <XAxis
-                      dataKey="name"
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fontSize: 10, fill: "#64748B" }}
-                      dy={8}
-                    />
-                    <Area
-                      type="linear"
-                      dataKey="current"
-                      stroke="#0D9762"
-                      strokeWidth={2}
-                      fill="url(#hatch)"
+                    <CartesianGrid strokeDasharray="3 3" vertical={true} horizontal={false} stroke="#e8eaef" />
+                    <ReferenceLine y={500} stroke="#D08226" strokeDasharray="4 4" label={{ value: "500 kg", fill: "#D08226", fontSize: 10, position: "insideBottomLeft", offset: 5 }} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#64748B" }} dy={8} />
+                    <Area type="linear" dataKey="current" stroke="#0D9762" strokeWidth={2} fill="url(#hatch)"
                       // @ts-ignore
                       dot={(props: any) => {
                         const { cx, cy, payload } = props;
                         if (payload.name === "Oct") {
                           return (
                             <g key="dot">
-                              <line
-                                x1={cx}
-                                y1={0}
-                                x2={cx}
-                                y2={200}
-                                stroke="#0D9762"
-                                strokeWidth={1.5}
-                              />
-                              <rect
-                                x={cx - 24}
-                                y={cy - 28}
-                                width={48}
-                                height={20}
-                                rx={4}
-                                fill="#11141B"
-                              />
-                              <text
-                                x={cx}
-                                y={cy - 14}
-                                textAnchor="middle"
-                                fill="white"
-                                fontSize={10}
-                                fontWeight="bold"
-                              >
-                                650 kg
-                              </text>
-                              <circle
-                                cx={cx}
-                                cy={cy}
-                                r={4}
-                                fill="white"
-                                stroke="#0D9762"
-                                strokeWidth={2}
-                              />
+                              <line x1={cx} y1={0} x2={cx} y2={200} stroke="#0D9762" strokeWidth={1.5} />
+                              <rect x={cx - 24} y={cy - 28} width={48} height={20} rx={4} fill="#11141B" />
+                              <text x={cx} y={cy - 14} textAnchor="middle" fill="white" fontSize={10} fontWeight="bold">650 kg</text>
+                              <circle cx={cx} cy={cy} r={4} fill="white" stroke="#0D9762" strokeWidth={2} />
                             </g>
                           );
                         }
                         return null;
                       }}
                     />
-                    <Area
-                      type="linear"
-                      dataKey="previous"
-                      stroke="#64748B"
-                      strokeWidth={1.5}
-                      strokeDasharray="3 3"
-                      fill="none"
-                    />
+                    <Area type="linear" dataKey="previous" stroke="#64748B" strokeWidth={1.5} strokeDasharray="3 3" fill="none" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
 
-              {/* Stats Side */}
               <div className="w-[120px] lg:w-[140px] flex flex-col gap-2 shrink-0">
                 <div className="bg-[#E7F6EC]/60 backdrop-blur-xl border border-white/60 rounded-xl lg:rounded-2xl p-2.5 lg:p-3 flex flex-col justify-between flex-1">
                   <div className="flex items-center gap-1.5 text-[#0D9762]">
                     <div className="w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full bg-[#0D9762] text-white flex items-center justify-center">
                       <Box className="w-2.5 h-2.5 lg:w-3 lg:h-3" />
                     </div>
-                    <span className="text-[10px] lg:text-[11px] font-medium opacity-80">
-                      Total Captured
-                    </span>
+                    <span className="text-[10px] lg:text-[11px] font-medium opacity-80">{d.total_captured}</span>
                   </div>
                   <div className="mt-1.5">
-                    <span className="text-[#0D9762] font-bold text-[15px] lg:text-[18px] tracking-tight">
-                      3,330 kg
-                    </span>
+                    <span className="text-[#0D9762] font-bold text-[15px] lg:text-[18px] tracking-tight">3,330 kg</span>
                   </div>
                 </div>
 
@@ -241,34 +160,23 @@ function Dashboard() {
                     <div className="w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full border-2 border-current flex items-center justify-center -ml-0.5">
                       <Box className="w-2.5 h-2.5 lg:w-3 lg:h-3" />
                     </div>
-                    <span className="text-[10px] lg:text-[11px] font-medium">
-                      Highest Month
-                    </span>
+                    <span className="text-[10px] lg:text-[11px] font-medium">{d.highest_month}</span>
                   </div>
                   <div className="flex items-baseline gap-1.5 mt-1.5">
-                    <span className="text-[#11141B] font-bold text-[15px] lg:text-[18px] tracking-tight">
-                      850 kg
-                    </span>
-                    <span className="text-[#11141B] text-[10px] lg:text-[11px] font-medium">
-                      Dec
-                    </span>
+                    <span className="text-[#11141B] font-bold text-[15px] lg:text-[18px] tracking-tight">850 kg</span>
+                    <span className="text-[#11141B] text-[10px] lg:text-[11px] font-medium">{d.dec}</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Card 3: Split */}
+          {/* Card 3: Split — Self-Sustaining Loop + Flood-Free Streak */}
           <div className="flex flex-col gap-2 md:gap-3 min-h-0 h-full">
-            {/* Top: Self-Sustaining Loop */}
             <div className="bg-white border border-gray-200 rounded-[1.6rem] lg:rounded-[1.8rem] p-3 lg:p-4 shadow-sm flex flex-col flex-1 min-h-0 overflow-hidden">
               <div className="flex items-center justify-between mb-1.5 shrink-0">
-                <span className="text-[10px] md:text-[11px] font-bold tracking-[0.1em] text-[#64748B] uppercase">
-                  Self-Sustaining Loop
-                </span>
-                <span className="bg-[#E7F6EC] border border-[#0D9762]/30 text-[#0D9762] px-2 py-0.5 rounded-full flex items-center justify-center text-[9px] font-bold uppercase tracking-wider">
-                  Active
-                </span>
+                <span className="text-[10px] md:text-[11px] font-bold tracking-[0.1em] text-[#64748B] uppercase">{d.loop_label}</span>
+                <span className="bg-[#E7F6EC] border border-[#0D9762]/30 text-[#0D9762] px-2 py-0.5 rounded-full flex items-center justify-center text-[9px] font-bold uppercase tracking-wider">{d.loop_active}</span>
               </div>
               <div className="flex-1 flex flex-col justify-between relative pl-3 mt-1 min-h-0">
                 <div className="absolute left-0 top-1 bottom-1 w-[2.5px] flex flex-col justify-between">
@@ -277,73 +185,38 @@ function Dashboard() {
                   <div className="w-full h-[22%] bg-[#0D9762] rounded-full"></div>
                   <div className="w-full h-[22%] bg-[#0D9762] rounded-full"></div>
                 </div>
-                {[
-                  { step: "01", label: "Intercept", value: "1,847 kg" },
-                  { step: "02", label: "Sort", value: "1,243 kg" },
-                  { step: "03", label: "Monetise", value: "Rp 4.85M" },
-                  { step: "04", label: "Sustain", value: "3 months" },
-                ].map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="flex justify-between items-center text-[11px] lg:text-[12px] min-h-0"
-                  >
+                {loopSteps.map((item, idx) => (
+                  <div key={idx} className="flex justify-between items-center text-[11px] lg:text-[12px] min-h-0">
                     <div className="flex gap-2 items-center">
-                      <span className="font-medium text-[#64748B]/50 tracking-widest font-mono">
-                        {item.step}
-                      </span>
-                      <span className="font-medium text-[#11141B]">
-                        {item.label}
-                      </span>
+                      <span className="font-medium text-[#64748B]/50 tracking-widest font-mono">{item.step}</span>
+                      <span className="font-medium text-[#11141B]">{item.label}</span>
                     </div>
-                    <span className="font-semibold text-[#0D9762]">
-                      {item.value}
-                    </span>
+                    <span className="font-semibold text-[#0D9762]">{item.value}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Bottom: Flood-Free Streak */}
             <div className="bg-white border border-gray-200 rounded-[1.6rem] lg:rounded-[1.8rem] p-3 lg:p-4 shadow-sm flex flex-col flex-1 min-h-0 overflow-hidden justify-between">
               <div className="flex flex-col shrink-0">
                 <div className="mb-1.5">
-                  <span className="text-[10px] md:text-[11px] font-bold tracking-[0.1em] text-[#64748B] uppercase">
-                    Flood-Free Streak
-                  </span>
+                  <span className="text-[10px] md:text-[11px] font-bold tracking-[0.1em] text-[#64748B] uppercase">{d.flood_streak}</span>
                 </div>
-
                 <div className="flex items-center gap-2">
-                  <span className="text-[32px] lg:text-[38px] font-bold text-[#11141B] leading-none tracking-tight">
-                    47
-                  </span>
+                  <span className="text-[32px] lg:text-[38px] font-bold text-[#11141B] leading-none tracking-tight">47</span>
                   <span className="text-[11px] lg:text-[12px] text-[#64748B] leading-[1.15]">
-                    days without
-                    <br />
-                    flood event
+                    {d.days_without}<br />{d.flood_event}
                   </span>
                 </div>
               </div>
-
               <div className="flex items-center justify-between shrink-0 pb-0.5">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#EF4444]"></div>
-                  <div className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#EF4444]"></div>
-                  <div className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#EF4444]"></div>
-                  <div className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#EF4444]"></div>
-                  <div className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#0D9762]"></div>
-                  <div className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#0D9762]"></div>
-                  <div className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#0D9762]"></div>
-                  <div className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#0D9762]"></div>
+                  {[...Array(4)].map((_, i) => <div key={i} className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#EF4444]"></div>)}
+                  {[...Array(4)].map((_, i) => <div key={i} className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#0D9762]"></div>)}
                 </div>
                 <div className="flex items-center gap-3 text-[10px] lg:text-[11px] text-[#64748B]">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#EF4444]"></div>
-                    Flood
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#0D9762]"></div>
-                    Safe
-                  </div>
+                  <div className="flex items-center gap-1.5"><div className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#EF4444]"></div>{d.legend_flood}</div>
+                  <div className="flex items-center gap-1.5"><div className="w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full bg-[#0D9762]"></div>{d.legend_safe}</div>
                 </div>
               </div>
             </div>
@@ -352,49 +225,24 @@ function Dashboard() {
           {/* Card 4: Revenue & Scale */}
           <div className="bg-white border border-gray-200 rounded-[1.6rem] lg:rounded-[1.8rem] p-3 lg:p-4 shadow-sm flex flex-col min-h-[240px] md:h-full md:min-h-0 overflow-hidden">
             <div className="mb-2 lg:mb-3 shrink-0">
-              <span className="text-[11px] md:text-[12px] font-bold tracking-[0.1em] text-[#64748B] uppercase">
-                Revenue & Scale
-              </span>
+              <span className="text-[11px] md:text-[12px] font-bold tracking-[0.1em] text-[#64748B] uppercase">{d.card4_label}</span>
             </div>
-
             <div className="flex flex-col shrink-0 mb-3 lg:mb-4">
-              <span className="text-[32px] lg:text-[40px] font-bold text-[#11141B] leading-none tracking-tight mb-1.5">
-                Rp 4.85M
-              </span>
-              <span className="text-[11.5px] lg:text-[12.5px] text-[#11141B]/80 font-medium tracking-wide">
-                +Rp 1.65M / mo • Repaid via recyclables
-              </span>
+              <span className="text-[32px] lg:text-[40px] font-bold text-[#11141B] leading-none tracking-tight mb-1.5">Rp 4.85M</span>
+              <span className="text-[11.5px] lg:text-[12.5px] text-[#11141B]/80 font-medium tracking-wide">{d.card4_sub}</span>
             </div>
-
             <div className="flex flex-col flex-1 min-h-0">
               <div className="flex flex-col flex-1 justify-between pb-1 min-h-0">
                 {[
-                  {
-                    title: "Depok flood points rem.",
-                    sub: "After pilot",
-                    value: "1/39",
-                  },
-                  {
-                    title: "Sorter income",
-                    sub: "Distributed to community",
-                    value: "Rp 14.5M",
-                  },
+                  { title: d.flood_points_title, sub: d.flood_points_sub, value: "1/39" },
+                  { title: d.sorter_income_title, sub: d.sorter_income_sub, value: "Rp 14.5M" },
                 ].map((item, idx) => (
-                  <div
-                    key={idx}
-                    className={`flex justify-between items-center py-1.5 lg:py-2 ${idx !== 0 ? "border-t border-[#e8eaef]" : ""}`}
-                  >
+                  <div key={idx} className={`flex justify-between items-center py-1.5 lg:py-2 ${idx !== 0 ? "border-t border-[#e8eaef]" : ""}`}>
                     <div className="flex flex-col gap-0.5">
-                      <span className="font-semibold text-[12px] lg:text-[13px] text-[#11141B]">
-                        {item.title}
-                      </span>
-                      <span className="text-[10.5px] lg:text-[11.5px] text-[#64748B] leading-none">
-                        {item.sub}
-                      </span>
+                      <span className="font-semibold text-[12px] lg:text-[13px] text-[#11141B]">{item.title}</span>
+                      <span className="text-[10.5px] lg:text-[11.5px] text-[#64748B] leading-none">{item.sub}</span>
                     </div>
-                    <span className="font-bold text-[12.5px] lg:text-[13.5px] text-[#11141B]">
-                      {item.value}
-                    </span>
+                    <span className="font-bold text-[12.5px] lg:text-[13.5px] text-[#11141B]">{item.value}</span>
                   </div>
                 ))}
               </div>
@@ -404,43 +252,26 @@ function Dashboard() {
           {/* Card 5: Environmental Impact */}
           <div className="bg-white border border-gray-200 rounded-[1.6rem] lg:rounded-[1.8rem] p-4 lg:p-5 shadow-sm flex flex-col min-h-[250px] md:h-full md:min-h-0 overflow-hidden">
             <div className="mb-2 lg:mb-4 shrink-0">
-              <span className="text-[11px] md:text-[12px] font-bold tracking-[0.1em] text-[#64748B] uppercase">
-                Environmental Impact
-              </span>
+              <span className="text-[11px] md:text-[12px] font-bold tracking-[0.1em] text-[#64748B] uppercase">{d.env_label}</span>
             </div>
-
             <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-2 lg:gap-y-3 min-h-0">
               <div className="flex flex-col justify-center min-h-0">
-                <span className="text-[20px] lg:text-[26px] font-bold text-[#0D9762] mb-0.5 leading-tight tracking-tight shrink-0">
-                  1,243 kg
-                </span>
-                <span className="text-[11px] lg:text-[12.5px] text-[#64748B] leading-snug lg:pr-2">
-                  Plastic diverted before ocean
-                </span>
+                <span className="text-[20px] lg:text-[26px] font-bold text-[#0D9762] mb-0.5 leading-tight tracking-tight shrink-0">1,243 kg</span>
+                <span className="text-[11px] lg:text-[12.5px] text-[#64748B] leading-snug lg:pr-2">{d.plastic_label}</span>
               </div>
               <div className="flex flex-col justify-center min-h-0">
-                <span className="text-[20px] lg:text-[26px] font-bold text-[#0D9762] mb-0.5 leading-tight tracking-tight shrink-0">
-                  2,847 kg
-                </span>
-                <span className="text-[11px] lg:text-[12.5px] text-[#64748B] leading-snug lg:pr-2">
-                  CO₂ offset via bamboo
-                </span>
+                <span className="text-[20px] lg:text-[26px] font-bold text-[#0D9762] mb-0.5 leading-tight tracking-tight shrink-0">2,847 kg</span>
+                <span className="text-[11px] lg:text-[12.5px] text-[#64748B] leading-snug lg:pr-2">{d.co2_label}</span>
               </div>
               <div className="flex flex-col justify-center min-h-0">
                 <Check className="w-6 h-6 lg:w-7 lg:h-7 text-[#0D9762] mb-1 stroke-[3] shrink-0" />
                 <span className="text-[11px] lg:text-[12.5px] text-[#64748B] leading-snug lg:pr-2">
-                  Stagnant water
-                  <br />
-                  accumulation off
+                  {d.stagnant_line1}<br />{d.stagnant_line2}
                 </span>
               </div>
               <div className="flex flex-col justify-center min-h-0">
-                <span className="text-[20px] lg:text-[26px] font-bold text-[#0D9762] mb-0.5 leading-tight tracking-tight shrink-0">
-                  0 kg
-                </span>
-                <span className="text-[11px] lg:text-[12.5px] text-[#64748B] leading-snug lg:pr-2">
-                  Operational carbon emissions
-                </span>
+                <span className="text-[20px] lg:text-[26px] font-bold text-[#0D9762] mb-0.5 leading-tight tracking-tight shrink-0">0 kg</span>
+                <span className="text-[11px] lg:text-[12.5px] text-[#64748B] leading-snug lg:pr-2">{d.carbon_label}</span>
               </div>
             </div>
           </div>
@@ -448,35 +279,15 @@ function Dashboard() {
           {/* Card 6: 6-Month Projections */}
           <div className="bg-white border border-gray-200 rounded-[1.6rem] lg:rounded-[1.8rem] p-3 lg:p-4 shadow-sm flex flex-col min-h-[280px] md:h-full md:min-h-0 overflow-hidden">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] md:text-[12px] font-bold tracking-[0.1em] text-[#D08226] uppercase">
-                6-Month Projections
-              </span>
-              <span className="bg-[#FFF5E8] border border-[#D08226]/30 text-[#D08226] px-2 py-0.5 rounded-full flex items-center justify-center text-[10px] font-bold uppercase tracking-wider shadow-sm">
-                Targets
-              </span>
+              <span className="text-[11px] md:text-[12px] font-bold tracking-[0.1em] text-[#D08226] uppercase">{d.proj_label}</span>
+              <span className="bg-[#FFF5E8] border border-[#D08226]/30 text-[#D08226] px-2 py-0.5 rounded-full flex items-center justify-center text-[10px] font-bold uppercase tracking-wider shadow-sm">{d.proj_targets}</span>
             </div>
-
             <div className="flex flex-col flex-1 min-h-0">
               <div className="flex flex-col flex-1 justify-between pb-1.5 min-h-0">
-                {[
-                  { label: "Waste captured (M6)", value: "~500 kg/mo" },
-                  { label: "Revenue target (M6)", value: "Rp 3–4.5M/mo" },
-                  { label: "Expected break-even", value: "Month 2" },
-                  { label: "Plastic diverted", value: "~3,000 kg" },
-                  { label: "Sorter income", value: "Rp 18–27M" },
-                  { label: "Flood target reduction", value: "4 → 0–1" },
-                  { label: "Active Traps at M6", value: "3 pilots" },
-                ].map((item, idx) => (
-                  <div
-                    key={idx}
-                    className={`flex justify-between items-center text-[11.5px] lg:text-[12.5px] ${idx !== 0 ? "border-t border-[#e8eaef] pt-1 lg:pt-1.5" : ""}`}
-                  >
-                    <span className="font-medium text-[#11141B]">
-                      {item.label}
-                    </span>
-                    <span className="font-bold text-[#D08226]">
-                      {item.value}
-                    </span>
+                {projItems.map((item, idx) => (
+                  <div key={idx} className={`flex justify-between items-center text-[11.5px] lg:text-[12.5px] ${idx !== 0 ? "border-t border-[#e8eaef] pt-1 lg:pt-1.5" : ""}`}>
+                    <span className="font-medium text-[#11141B]">{item.label}</span>
+                    <span className="font-bold text-[#D08226]">{item.value}</span>
                   </div>
                 ))}
               </div>
@@ -491,21 +302,44 @@ function Dashboard() {
 export default function App() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isTranslated, setIsTranslated] = useState(false);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
-  const [videoCurrentTime, setVideoCurrentTime] = useState(0);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [videoDuration, setVideoDuration] = useState(0);
+  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(1);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const progressFillRef = useRef<HTMLDivElement>(null);
+  const timeDisplayRef = useRef<HTMLSpanElement>(null);
+
+  const { lang } = useLanguage();
+  const t = translations[lang];
 
   const toggleVideo = () => {
     const video = videoRef.current;
     if (!video) return;
-    if (video.paused) {
-      video.play();
-      setIsVideoPlaying(true);
-    } else {
-      video.pause();
-      setIsVideoPlaying(false);
-    }
+    if (video.paused) { video.play(); setIsVideoPlaying(true); }
+    else { video.pause(); setIsVideoPlaying(false); }
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const video = videoRef.current;
+    if (!video) return;
+    const next = !isMuted;
+    video.muted = next;
+    setIsMuted(next);
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    const val = parseFloat(e.target.value);
+    const video = videoRef.current;
+    if (!video) return;
+    video.volume = val;
+    setVolume(val);
+    if (val === 0) { video.muted = true; setIsMuted(true); }
+    else if (isMuted) { video.muted = false; setIsMuted(false); }
   };
 
   const formatTime = (s: number) => {
@@ -522,27 +356,34 @@ export default function App() {
     const time = ratio * videoDuration;
     if (videoRef.current) {
       videoRef.current.currentTime = time;
-      setVideoCurrentTime(time);
+      if (progressFillRef.current && videoDuration) progressFillRef.current.style.width = `${ratio * 100}%`;
+      if (timeDisplayRef.current) timeDisplayRef.current.textContent = `${formatTime(time)} / ${formatTime(videoDuration)}`;
     }
   };
 
+  const toggleFullscreen = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!document.fullscreenElement) videoContainerRef.current?.requestFullscreen();
+    else document.exitFullscreen();
+  };
+
   useEffect(() => {
-    // Add reveal class dynamically to children we want to animate
-    document.querySelectorAll("section").forEach(section => {
-      // Find all main block elements inside the section except the dashboard section
+    const onFsChange = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => document.removeEventListener("fullscreenchange", onFsChange);
+  }, []);
+
+  useEffect(() => {
+    document.querySelectorAll("section").forEach((section) => {
       if (section.id !== "dashboard") {
         const blocks = section.querySelectorAll("h2, p, blockquote, ul, .grid > div, .relative, .bg-\\[\\#EFECE6\\], .border-l-\\[3px\\], .bg-white");
-        blocks.forEach(block => block.classList.add("reveal"));
+        blocks.forEach((block) => block.classList.add("reveal"));
       }
     });
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-          }
-        });
+        entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add("is-visible"); });
       },
       { threshold: 0.12, rootMargin: "0px" }
     );
@@ -558,56 +399,145 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
+  // Solution steps
+  const solutionSteps = [
+    { num: "01", title: t.solution.step1_title, desc: t.solution.step1_desc },
+    { num: "02", title: t.solution.step2_title, desc: t.solution.step2_desc },
+    { num: "03", title: t.solution.step3_title, desc: t.solution.step3_desc },
+    { num: "04", title: t.solution.step4_title, desc: t.solution.step4_desc },
+  ];
+
+  // Structural Frame specs
+  const frameSpecs = [
+    { label: t.solution.frame_species, value: "Dendrocalamus asper + Gigantochloa apus" },
+    { label: t.solution.frame_source,  value: "Bogor, 30km from site" },
+    { label: t.solution.frame_tensile, value: "94–220 MPa" },
+    { label: t.solution.frame_sequesters, value: "27.79 Mg C/ha/yr" },
+    { label: t.solution.frame_life,    value: "5–7 yr treated, 10–15 yr anchors" },
+    { label: t.solution.frame_eol,     value: "zero microplastics" },
+  ];
+
+  // Interception Mesh specs
+  const meshSpecs = [
+    { label: t.solution.mesh_material,   value: "Polypropylene (PP)" },
+    { label: t.solution.mesh_dimensions, value: "1.8m tall × 4.8m wide" },
+    { label: t.solution.mesh_circular,   value: "captured PP → propylene → new netting" },
+    { label: t.solution.mesh_antitheft,  value: "zero scrap value" },
+    { label: t.solution.mesh_anchoring,  value: "buried anchors + MoUs + CCTV" },
+  ];
+
+  // Model stats
+  const modelStats = [
+    { value: "$125",       label: t.model.stat1_label },
+    { value: "30 days",    label: t.model.stat2_label },
+    { value: "500 kg/mo",  label: t.model.stat3_label },
+    { value: "Rp 3–4.5M", label: t.model.stat4_label },
+    { value: "Rp 500K",   label: t.model.stat5_label },
+    { value: "Month 2",   label: t.model.stat6_label },
+  ];
+
+  // CAPEX items
+  const capexItems = [
+    { label: t.model.capex1, value: "$700" },
+    { label: t.model.capex2, value: "$800" },
+    { label: t.model.capex3, value: "$500" },
+    { label: t.model.capex4, value: "$1,500" },
+    { label: t.model.capex5, value: "$500" },
+  ];
+
+  // OPEX items
+  const opexItems = [
+    { label: t.model.opex1, value: "Rp 150,000" },
+    { label: t.model.opex2, value: "Rp 100,000" },
+    { label: t.model.opex3, value: "Rp 250,000" },
+  ];
+
+  // Impact panels
+  const impactPanels = [
+    { title: t.impact.eco_title,  subtitle: t.impact.eco_sub,  bullets: t.impact.eco_bullets },
+    { title: t.impact.ecol_title, subtitle: t.impact.ecol_sub, bullets: t.impact.ecol_bullets },
+    { title: t.impact.soc_title,  subtitle: t.impact.soc_sub,  bullets: t.impact.soc_bullets },
+  ];
+
+  // Science citations
+  const citations = [
+    { source: "SISWANTO ET AL., 2015 · BAMS", text: t.science.cite1 },
+    { source: "SISWANTO ET AL., 2022 · IJC",  text: t.science.cite2 },
+    { source: "LUBIS ET AL., 2022 · GRL",     text: t.science.cite3 },
+    { source: "KURNIADI ET AL., 2024 · CMIP6", text: t.science.cite4 },
+    { source: "IPCC AR6, CHAPTER 10 · HIGH CONFIDENCE", text: t.science.cite5 },
+  ];
+
+  // Bamboo specs
+  const bambooSpecs = [
+    { val: "94–220 MPa",  label: t.science.bamboo1 },
+    { val: "~0 t CO₂/t", label: t.science.bamboo2 },
+    { val: "27.79 Mg C", label: t.science.bamboo3 },
+    { val: "5–7 years",  label: t.science.bamboo4 },
+    { val: "0 IDR",      label: t.science.bamboo5 },
+    { val: "Zero",       label: t.science.bamboo6 },
+  ];
+
+  // Team members
+  const teamMembers = [
+    { img: "/arnav.png",   quote: t.team.quote1 },
+    { img: "/adiro.png",   quote: t.team.quote2 },
+    { img: "/anushree.png", quote: t.team.quote3 },
+  ];
+
+  // Roadmap nodes
+  const roadmapNodes = [
+    { time: t.roadmap.node1_time, title: t.roadmap.node1_title, body: t.roadmap.node1_body },
+    { time: t.roadmap.node2_time, title: t.roadmap.node2_title, body: t.roadmap.node2_body },
+    { time: t.roadmap.node3_time, title: t.roadmap.node3_title, body: t.roadmap.node3_body },
+    { time: t.roadmap.node4_time, title: t.roadmap.node4_title, body: t.roadmap.node4_body },
+    { time: t.roadmap.node5_time, title: t.roadmap.node5_title, body: t.roadmap.node5_body },
+  ];
+
+  // Causal chain nodes
+  const chainNodes = [
+    t.problem.chain1, t.problem.chain2, t.problem.chain3,
+    t.problem.chain4, t.problem.chain5,
+  ];
+
   return (
     <div className="bg-white min-h-screen font-sans text-gray-900">
       <SiteNavbar />
 
       {/* Lightbox */}
       {isLightboxOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 cursor-pointer backdrop-blur-sm"
           onClick={() => setIsLightboxOpen(false)}
         >
-          <div className="relative w-full max-w-6xl aspect-[21/9] bg-white rounded-2xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="relative w-full max-w-6xl aspect-[21/9] bg-white rounded-2xl overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <img src="/sbmc.png" alt="Social Business Model Canvas" className="absolute inset-0 w-full h-full object-contain" />
           </div>
         </div>
       )}
 
-      {/* Hero section containing the Dashboard */}
+      {/* Hero / Dashboard */}
       <section id="dashboard" className="w-full h-screen relative pt-0">
         <Dashboard />
       </section>
 
-      {/* Main Website Content Starts Here */}
+      {/* ── PROBLEM ── */}
       <section id="problem" className="py-24 md:py-32 border-b border-gray-200">
         <div className="max-w-[1200px] w-full mx-auto px-6 md:px-12">
-          {/* Section Label */}
           <div className="mb-12">
-            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">
-              The Problem
-            </span>
+            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">{t.problem.label}</span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 mb-20">
-            {/* Left Column */}
             <div className="lg:col-span-7 flex flex-col pt-2">
               <h2 className="text-5xl md:text-6xl font-bold leading-[1.1] tracking-tight text-[#11141B] mb-10">
-                603 Families.<br />
-                Not a Storm.<br />
-                <span className="text-[#0D9762]">Trash.</span>
+                {t.problem.h2_line1}<br />
+                {t.problem.h2_line2}<br />
+                <span className="text-[#0D9762]">{t.problem.h2_line3}</span>
               </h2>
 
-              <p className="text-[17px] leading-relaxed text-[#475569] mb-6">
-                Kali Cabang Timur runs through Pancoran Mas, one of Depok's most flood-prone districts.
-                It floods four times a year — not because of exceptional rainfall, but because uncollected
-                solid waste blocks its drainage capacity.
-              </p>
-              
-              <p className="text-[17px] leading-relaxed text-[#475569] mb-10">
-                Depok generates 1,363 tonnes of waste daily. Less than one-third is formally collected.
-                The rest washes into drainage channels with every shower.
-              </p>
+              <p className="text-[17px] leading-relaxed text-[#475569] mb-6">{t.problem.p1}</p>
+              <p className="text-[17px] leading-relaxed text-[#475569] mb-10">{t.problem.p2}</p>
 
               <blockquote className="border-l-4 border-[#0D9762] pl-6 py-2 mb-12 relative">
                 <div className="relative mb-3" style={{ minHeight: "3.5rem" }}>
@@ -615,7 +545,7 @@ export default function App() {
                     "Rata-rata banjir terjadi akibat saluran yang tersumbat oleh sampah."
                   </p>
                   <p className={`absolute top-0 left-0 w-full text-[19px] md:text-[21px] font-medium italic text-[#0D9762] leading-snug transition-opacity duration-300 pointer-events-none ${isTranslated ? "opacity-100" : "opacity-0"}`}>
-                    "Flooding occurs because drainage channels are blocked by waste."
+                    {t.problem.quote_translated_text}
                   </p>
                 </div>
                 <footer className="text-[14px] text-[#64748B] flex items-center flex-wrap gap-x-4 gap-y-2">
@@ -625,33 +555,31 @@ export default function App() {
                     className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors cursor-pointer ${isTranslated ? "bg-[#E7F6EC] text-[#0D9762]" : "bg-gray-100 text-gray-500 hover:bg-[#E7F6EC] hover:text-[#0D9762]"}`}
                   >
                     <Languages className="w-3.5 h-3.5" />
-                    <span>{isTranslated ? "Translated to English" : "Translate"}</span>
+                    <span>{isTranslated ? t.problem.quote_translated : t.problem.quote_translate}</span>
                   </button>
                 </footer>
               </blockquote>
 
-              {/* Stat grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10 mt-auto">
                 <div className="flex flex-col">
                   <span className="text-3xl lg:text-4xl font-bold text-[#11141B] tracking-tight mb-1">1,363 t/day</span>
-                  <span className="text-[14px] text-[#64748B] leading-snug">Depok daily waste (SIPSN 2024)</span>
+                  <span className="text-[14px] text-[#64748B] leading-snug">{t.problem.stat1_label}</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-3xl lg:text-4xl font-bold text-[#11141B] tracking-tight mb-1">&lt;⅓</span>
-                  <span className="text-[14px] text-[#64748B] leading-snug">Formal collection rate</span>
+                  <span className="text-[14px] text-[#64748B] leading-snug">{t.problem.stat2_label}</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-3xl lg:text-4xl font-bold text-[#11141B] tracking-tight mb-1">112</span>
-                  <span className="text-[14px] text-[#64748B] leading-snug">Illegal dump points (Bappenas 2024)</span>
+                  <span className="text-[14px] text-[#64748B] leading-snug">{t.problem.stat3_label}</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-3xl lg:text-4xl font-bold text-[#11141B] tracking-tight mb-1">Rp 2–3M</span>
-                  <span className="text-[14px] text-[#64748B] leading-snug">Loss per household per flood</span>
+                  <span className="text-[14px] text-[#64748B] leading-snug">{t.problem.stat4_label}</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Column */}
             <div className="lg:col-span-5 flex flex-col gap-6 lg:pt-6">
               <div className="aspect-[4/3] bg-[#EFECE6] rounded-2xl overflow-hidden relative reveal">
                 <img src="/img1.png" alt="Waste in the kali" className="absolute inset-0 w-full h-full object-cover" />
@@ -662,17 +590,11 @@ export default function App() {
             </div>
           </div>
 
-          {/* Causal Chain Diagram */}
+          {/* Causal chain */}
           <div className="mb-24">
             <div className="overflow-x-auto pb-6 -mx-6 px-6 lg:mx-0 lg:px-0">
               <div className="min-w-[800px] flex items-center justify-between gap-4">
-                {[
-                  "Rain",
-                  "Street waste mobilised",
-                  "Drainage blocked",
-                  "Flooding",
-                  "603 families displaced"
-                ].map((node, i, arr) => (
+                {chainNodes.map((node, i, arr) => (
                   <div key={i} className="flex items-center gap-4 flex-1">
                     <div className="bg-white border border-gray-200 shadow-sm rounded-xl px-5 py-4 text-[13px] lg:text-[14px] font-semibold text-[#11141B] flex-1 text-center whitespace-nowrap">
                       {node}
@@ -687,7 +609,7 @@ export default function App() {
               </div>
             </div>
             <p className="text-center text-[13px] font-bold text-[#64748B] uppercase tracking-[0.1em] mt-2">
-              Rain is the trigger. <span className="text-[#11141B]">Waste is the cause.</span>
+              {t.problem.chain_trigger} <span className="text-[#11141B]">{t.problem.chain_cause}</span>
             </p>
           </div>
         </div>
@@ -698,160 +620,116 @@ export default function App() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 mb-16 md:mb-20">
               <div className="flex flex-col text-center">
                 <span className="text-5xl md:text-6xl font-bold text-[#0D9762] tracking-tight mb-4">2.4×</span>
-                <span className="text-[15px] text-[#0D9762]/80 font-medium">Extreme rainfall more likely vs 115 yrs ago<br className="hidden md:block"/> (Siswanto et al. 2015)</span>
+                <span className="text-[15px] text-[#0D9762]/80 font-medium">{t.problem.climate1}</span>
               </div>
               <div className="flex flex-col text-center">
                 <span className="text-5xl md:text-6xl font-bold text-[#0D9762] tracking-tight mb-4">1.6°C</span>
-                <span className="text-[15px] text-[#0D9762]/80 font-medium">Jakarta temperature rise<br className="hidden md:block"/> since 1866</span>
+                <span className="text-[15px] text-[#0D9762]/80 font-medium">{t.problem.climate2}</span>
               </div>
               <div className="flex flex-col text-center">
                 <span className="text-5xl md:text-6xl font-bold text-[#0D9762] tracking-tight mb-4">377mm</span>
-                <span className="text-[15px] text-[#0D9762]/80 font-medium">Largest single-day rainfall in<br className="hidden md:block"/> 135-year record — Jakarta, 1 Jan 2020<br className="hidden md:block"/>(Lubis et al. 2022)</span>
+                <span className="text-[15px] text-[#0D9762]/80 font-medium">{t.problem.climate3}</span>
               </div>
             </div>
             <p className="text-center text-[24px] md:text-[28px] font-medium text-[#0D9762] leading-tight italic max-w-3xl mx-auto tracking-tight">
-              "Climate change is not creating a new problem.<br className="hidden sm:block" /> It is accelerating an existing one."
+              {t.problem.climate_quote}
             </p>
           </div>
         </div>
       </section>
 
+      {/* ── SOLUTION ── */}
       <section id="solution" className="py-24 md:py-32 border-b border-gray-200 bg-[#FAFAFA]">
         <div className="max-w-[1200px] w-full mx-auto px-6 md:px-12 mb-20 md:mb-24">
-          {/* Section Label */}
           <div className="mb-12 text-left">
-            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">
-              The Solution
-            </span>
+            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">{t.solution.label}</span>
           </div>
 
           <div className="max-w-[640px] mb-20">
             <h2 className="text-5xl md:text-6xl font-bold leading-[1.1] tracking-tight text-[#11141B] mb-8">
-              A Trap. A Loop.<br />
-              <span className="text-[#0D9762]">A Community.</span>
+              {t.solution.h2_line1}<br />
+              <span className="text-[#0D9762]">{t.solution.h2_line2}</span>
             </h2>
-            <p className="text-[18px] md:text-[19px] leading-relaxed text-[#475569]">
-              Kali Guard is a bamboo-and-net structure installed across Kali Cabang Timur. 
-              It intercepts floating waste before it reaches the downstream drainage junction. 
-              Captured waste is sorted by paid community members. Recyclables are sold to 
-              Depok's central waste bank. Revenue closes the loop — funding maintenance 
-              and sorter pay without external grants.
-            </p>
+            <p className="text-[18px] md:text-[19px] leading-relaxed text-[#475569]">{t.solution.intro}</p>
           </div>
 
-          {/* 4-step grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8 mb-24 lg:mb-32">
-            {[
-              { num: "01", title: "Intercept", desc: "Bamboo frame and net spans the 4.8m channel. Captures floating waste 24/7. No power required. Works during monsoons and blackouts." },
-              { num: "02", title: "Sort", desc: "Community sorters from Komunitas Ciliwung Depok separate recyclables at the adjacent station. Paid daily. No volunteer dependency." },
-              { num: "03", title: "Monetise", desc: "Sorted recyclables sold to BSI Rumah Harum at Rp 6,000–9,000/kg. PET, HDPE, metals — all have published market rates." },
-              { num: "04", title: "Sustain", desc: "Revenue covers maintenance and sorter pay. Net surplus from Month 2. No grants, no donations, no government budget required." }
-            ].map((step, i) => (
+            {solutionSteps.map((step, i) => (
               <div key={i} className="flex flex-col relative group">
                 <div className="absolute -top-10 -left-6 text-[100px] font-extrabold text-gray-200/40 -z-10 group-hover:text-gray-200/70 transition-colors duration-500 font-mono tracking-tighter leading-none pointer-events-none">
                   {step.num}
                 </div>
-                <div className="w-8 h-8 rounded-full bg-[#11141B] text-white flex items-center justify-center text-[13px] font-bold mb-6">
-                  {i + 1}
-                </div>
-                <h3 className="text-xl font-bold text-[#11141B] mb-3 tracking-tight">
-                  {step.title}
-                </h3>
-                <p className="text-[15px] leading-relaxed text-[#475569]">
-                  {step.desc}
-                </p>
+                <div className="w-8 h-8 rounded-full bg-[#11141B] text-white flex items-center justify-center text-[13px] font-bold mb-6">{i + 1}</div>
+                <h3 className="text-xl font-bold text-[#11141B] mb-3 tracking-tight">{step.title}</h3>
+                <p className="text-[15px] leading-relaxed text-[#475569]">{step.desc}</p>
               </div>
             ))}
           </div>
 
           <p className="text-center text-[24px] md:text-[28px] font-medium text-[#11141B] leading-tight italic font-serif">
-            "No electricity. No internet. No sensors.<br className="hidden sm:block" /> No server. No update required."
+            {t.solution.closing_quote}
           </p>
         </div>
 
-        {/* Video — contained, aspect-ratio-preserving */}
+        {/* Video */}
         <div className="w-full mb-20 md:mb-24 reveal">
           <div className="max-w-[1200px] mx-auto px-6 md:px-12">
-            <div
-              className="relative bg-black rounded-2xl overflow-hidden group/video cursor-pointer"
-              onClick={toggleVideo}
-            >
+            <div ref={videoContainerRef} className="video-container relative bg-black rounded-2xl overflow-hidden group/video cursor-pointer" onClick={toggleVideo}>
               <video
                 ref={videoRef}
-                src="/video.MOV"
+                src="/clip.mov"
                 className="w-full h-auto block"
-                autoPlay
-                muted
                 loop
                 playsInline
-                onTimeUpdate={() => videoRef.current && setVideoCurrentTime(videoRef.current.currentTime)}
+                onTimeUpdate={() => {
+                  const video = videoRef.current;
+                  if (!video) return;
+                  const { currentTime, duration } = video;
+                  if (progressFillRef.current && duration) progressFillRef.current.style.width = `${(currentTime / duration) * 100}%`;
+                  if (timeDisplayRef.current) timeDisplayRef.current.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+                }}
                 onLoadedMetadata={() => videoRef.current && setVideoDuration(videoRef.current.duration)}
               />
-
-              {/* Big centered play button — only when paused */}
               {!isVideoPlaying && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-14 h-14 md:w-18 md:h-18 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/25 shadow-xl">
-                    <Play className="w-6 h-6 md:w-8 md:h-8 text-white fill-white translate-x-0.5" />
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-black/55 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30 shadow-xl">
+                    <Play className="w-7 h-7 md:w-9 md:h-9 text-white fill-white translate-x-0.5" />
                   </div>
                 </div>
               )}
-
-              {/* Bottom control bar — hidden when playing, shown on hover or when paused */}
-              <div
-                className={`absolute bottom-0 left-0 right-0 px-4 pt-8 pb-3 bg-gradient-to-t from-black/75 to-transparent transition-opacity duration-300 ${
-                  isVideoPlaying ? "opacity-0 group-hover/video:opacity-100" : "opacity-100"
-                }`}
-              >
-                {/* Seek bar */}
-                <div
-                  className="relative h-[3px] bg-white/30 rounded-full mb-3 cursor-pointer group/seek"
-                  onClick={handleSeek}
-                >
-                  <div
-                    className="h-full bg-white rounded-full relative"
-                    style={{ width: `${videoDuration ? (videoCurrentTime / videoDuration) * 100 : 0}%` }}
-                  >
+              <div className={`absolute bottom-0 left-0 right-0 px-4 pt-8 pb-3 bg-gradient-to-t from-black/75 to-transparent transition-opacity duration-300 ${isVideoPlaying ? "opacity-0 group-hover/video:opacity-100" : "opacity-100"}`}>
+                <div className="relative h-[3px] bg-white/30 rounded-full mb-3 cursor-pointer group/seek" onClick={handleSeek}>
+                  <div ref={progressFillRef} className="h-full bg-white rounded-full relative" style={{ width: "0%" }}>
                     <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-md opacity-0 group-hover/seek:opacity-100 transition-opacity" />
                   </div>
                 </div>
-
-                {/* Controls row */}
-                <div className="flex items-center gap-3" onClick={e => e.stopPropagation()}>
-                  <button
-                    onClick={toggleVideo}
-                    className="text-white hover:text-white/80 transition-colors flex items-center"
-                  >
-                    {isVideoPlaying
-                      ? <Pause className="w-4 h-4 fill-white" />
-                      : <Play className="w-4 h-4 fill-white translate-x-px" />
-                    }
+                <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+                  <button onClick={toggleVideo} className="text-white hover:text-white/80 transition-colors flex items-center">
+                    {isVideoPlaying ? <Pause className="w-4 h-4 fill-white" /> : <Play className="w-4 h-4 fill-white translate-x-px" />}
                   </button>
-                  <span className="text-white/90 text-[11px] font-mono tracking-wide tabular-nums">
-                    {formatTime(videoCurrentTime)} / {formatTime(videoDuration)}
-                  </span>
+                  <span ref={timeDisplayRef} className="text-white/90 text-[11px] font-mono tracking-wide tabular-nums">0:00 / 0:00</span>
+                  <div className="ml-auto flex items-center gap-2">
+                    <button onClick={toggleMute} className="text-white hover:text-white/80 transition-colors flex items-center">
+                      {isMuted || volume === 0 ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                    </button>
+                    <input type="range" min="0" max="1" step="0.05" value={isMuted ? 0 : volume} onChange={handleVolumeChange} onClick={(e) => e.stopPropagation()} className="w-16 md:w-20 h-[3px] accent-white cursor-pointer" />
+                    <button onClick={toggleFullscreen} className="text-white hover:text-white/80 transition-colors flex items-center ml-1">
+                      {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Materials */}
         <div className="max-w-[1200px] w-full mx-auto px-6 md:px-12">
-          {/* Two-column materials panel */}
           <div className="bg-[#EFECE6] rounded-3xl p-8 md:p-12 lg:p-16 grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 border border-[#e5e1d8]">
             <div className="flex flex-col">
-              <h3 className="text-[13px] font-bold tracking-[0.1em] text-[#64748B] uppercase mb-8 pb-4 border-b border-[#d8d3c7]">
-                Structural Frame
-              </h3>
+              <h3 className="text-[13px] font-bold tracking-[0.1em] text-[#64748B] uppercase mb-8 pb-4 border-b border-[#d8d3c7]">{t.solution.frame_label}</h3>
               <ul className="space-y-5">
-                {[
-                  { label: "Species", value: "Dendrocalamus asper + Gigantochloa apus" },
-                  { label: "Source", value: "Bogor, 30km from site" },
-                  { label: "Tensile strength", value: "94–220 MPa" },
-                  { label: "Sequesters", value: "27.79 Mg C/ha/yr" },
-                  { label: "Service life", value: "5–7 yr treated, 10–15 yr anchors" },
-                  { label: "End of life", value: "zero microplastics" }
-                ].map((item, i) => (
+                {frameSpecs.map((item, i) => (
                   <li key={i} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
                     <span className="text-[#64748B] font-medium text-[14px] sm:w-[140px] shrink-0 leading-tight">{item.label}</span>
                     <span className="text-[#11141B] font-semibold text-[15px] leading-tight">{item.value}</span>
@@ -859,19 +737,10 @@ export default function App() {
                 ))}
               </ul>
             </div>
-
             <div className="flex flex-col">
-              <h3 className="text-[13px] font-bold tracking-[0.1em] text-[#64748B] uppercase mb-8 pb-4 border-b border-[#d8d3c7]">
-                Interception Mesh
-              </h3>
+              <h3 className="text-[13px] font-bold tracking-[0.1em] text-[#64748B] uppercase mb-8 pb-4 border-b border-[#d8d3c7]">{t.solution.mesh_label}</h3>
               <ul className="space-y-5">
-                {[
-                  { label: "Material", value: "Polypropylene (PP)" },
-                  { label: "Dimensions", value: "1.8m tall × 4.8m wide" },
-                  { label: "Circular", value: "captured PP → propylene → new netting" },
-                  { label: "Anti-theft", value: "zero scrap value" },
-                  { label: "Anchoring", value: "buried anchors + MoUs + CCTV" }
-                ].map((item, i) => (
+                {meshSpecs.map((item, i) => (
                   <li key={i} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
                     <span className="text-[#64748B] font-medium text-[14px] sm:w-[140px] shrink-0 leading-tight">{item.label}</span>
                     <span className="text-[#11141B] font-semibold text-[15px] leading-tight">{item.value}</span>
@@ -883,83 +752,53 @@ export default function App() {
         </div>
       </section>
 
+      {/* ── MODEL ── */}
       <section id="model" className="py-24 md:py-32 border-b border-gray-200">
         <div className="max-w-[1200px] w-full mx-auto px-6 md:px-12">
-          {/* Section Label */}
           <div className="mb-12 text-left">
-            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">
-              The Model
-            </span>
+            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">{t.model.label}</span>
           </div>
-
           <div className="mb-20 text-left">
             <h2 className="text-5xl md:text-6xl font-bold leading-[1.1] tracking-tight text-[#11141B]">
-              Built to be self-sustaining.<br />
-              <span className="text-[#0D9762]">Not grant-dependent.</span>
+              {t.model.h2_line1}<br />
+              <span className="text-[#0D9762]">{t.model.h2_line2}</span>
             </h2>
           </div>
 
-          {/* PART A - SBMC Image */}
+          {/* SBMC */}
           <div className="mb-32">
-            <div
-              className="w-full cursor-pointer hover:opacity-90 transition-opacity reveal mb-6"
-              onClick={() => setIsLightboxOpen(true)}
-            >
+            <div className="w-full cursor-pointer hover:opacity-90 transition-opacity reveal mb-6" onClick={() => setIsLightboxOpen(true)}>
               <img src="/sbmc.png" alt="Social Business Model Canvas" className="w-full h-auto" />
             </div>
             <div className="text-center">
-              <p className="text-[14px] text-[#64748B] mb-2 font-medium">
-                Social Business Model Canvas — Kali Guard, Team Arkadia, 2026
-              </p>
-              <a
-                href="/sbmc.png"
-                download="SBMC_KaliGuard.png"
-                className="text-[13px] font-bold text-[#0D9762] hover:text-[#0D9762]/80 transition-colors uppercase tracking-[0.05em] flex items-center justify-center gap-1 mx-auto group"
-              >
+              <p className="text-[14px] text-[#64748B] mb-2 font-medium">{t.model.sbmc_caption}</p>
+              <a href="/sbmc.png" download="SBMC_KaliGuard.png" className="text-[13px] font-bold text-[#0D9762] hover:text-[#0D9762]/80 transition-colors uppercase tracking-[0.05em] flex items-center justify-center gap-1 mx-auto group">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-y-0.5 transition-transform"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download SBMC
+                {t.model.download}
               </a>
             </div>
           </div>
 
-          {/* PART B - Numbers grid */}
+          {/* Numbers grid */}
           <div className="mb-32">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
-              {[
-                { value: "$125", label: "Total pilot cost (materials)" },
-                { value: "30 days", label: "Decision to first trap installed" },
-                { value: "500 kg/mo", label: "Waste capture target Month 1" },
-                { value: "Rp 3–4.5M", label: "Monthly revenue from recyclables" },
-                { value: "Rp 500K", label: "Monthly operating cost" },
-                { value: "Month 2", label: "Break-even point" }
-              ].map((stat, i) => (
+              {modelStats.map((stat, i) => (
                 <div key={i} className="bg-white border border-gray-200 shadow-sm rounded-2xl p-8 flex flex-col items-center text-center hover:border-gray-300 transition-colors">
                   <span className="text-4xl lg:text-5xl font-bold text-[#11141B] tracking-tight mb-3">{stat.value}</span>
                   <span className="text-[15px] text-[#64748B] font-medium leading-snug">{stat.label}</span>
                 </div>
               ))}
             </div>
-            <p className="text-center text-[15px] text-[#64748B] italic max-w-[600px] mx-auto leading-relaxed">
-              Revenue: 500 kg/month × Rp 6,000–9,000/kg (BSI Rumah Harum published rates, WWF Plastic Smart Cities 2023). Operating cost covers net replacement, inspection, and sorter compensation.
-            </p>
+            <p className="text-center text-[15px] text-[#64748B] italic max-w-[600px] mx-auto leading-relaxed">{t.model.revenue_note}</p>
           </div>
 
-          {/* PART C - Budget table */}
+          {/* Budget table */}
           <div className="bg-[#EFECE6] rounded-3xl p-8 md:p-12 lg:p-16 border border-[#e5e1d8]">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
-              {/* Left Column */}
               <div className="flex flex-col">
-                <h3 className="text-[13px] font-bold tracking-[0.1em] text-[#64748B] uppercase mb-8 pb-4 border-b border-[#d8d3c7]">
-                  CAPEX (Pilot Phase)
-                </h3>
+                <h3 className="text-[13px] font-bold tracking-[0.1em] text-[#64748B] uppercase mb-8 pb-4 border-b border-[#d8d3c7]">{t.model.capex_label}</h3>
                 <ul className="space-y-4 mb-6">
-                  {[
-                    { label: "Prototype (1–2 units)", value: "$700" },
-                    { label: "Studies & standardisation", value: "$800" },
-                    { label: "Administration & patent", value: "$500" },
-                    { label: "3 Pilot installations", value: "$1,500" },
-                    { label: "In-situ trials & testing", value: "$500" }
-                  ].map((item, i) => (
+                  {capexItems.map((item, i) => (
                     <li key={i} className="flex justify-between items-baseline gap-4">
                       <span className="text-[15px] font-medium text-[#475569] shrink-0">{item.label}</span>
                       <div className="border-b border-dotted border-gray-400 opacity-50 grow"></div>
@@ -968,22 +807,14 @@ export default function App() {
                   ))}
                 </ul>
                 <div className="flex justify-between items-baseline pt-4 border-t border-[#11141B]">
-                  <span className="text-[16px] font-bold text-[#11141B]">Total CAPEX</span>
+                  <span className="text-[16px] font-bold text-[#11141B]">{t.model.capex_total}</span>
                   <span className="text-[18px] font-extrabold text-[#11141B]">~$4,000</span>
                 </div>
               </div>
-
-              {/* Right Column */}
               <div className="flex flex-col">
-                <h3 className="text-[13px] font-bold tracking-[0.1em] text-[#64748B] uppercase mb-8 pb-4 border-b border-[#d8d3c7]">
-                  OPEX (Per Month)
-                </h3>
+                <h3 className="text-[13px] font-bold tracking-[0.1em] text-[#64748B] uppercase mb-8 pb-4 border-b border-[#d8d3c7]">{t.model.opex_label}</h3>
                 <ul className="space-y-4 mb-6">
-                  {[
-                    { label: "Net replacement (amortised)", value: "Rp 150,000" },
-                    { label: "Structural inspection", value: "Rp 100,000" },
-                    { label: "Sorter compensation", value: "Rp 250,000" }
-                  ].map((item, i) => (
+                  {opexItems.map((item, i) => (
                     <li key={i} className="flex justify-between items-baseline gap-4">
                       <span className="text-[15px] font-medium text-[#475569] shrink-0">{item.label}</span>
                       <div className="border-b border-dotted border-gray-400 opacity-50 grow"></div>
@@ -992,8 +823,8 @@ export default function App() {
                   ))}
                 </ul>
                 <div className="pt-4 border-t border-[#11141B] flex justify-between items-baseline mt-auto">
-                  <span className="text-[16px] font-bold text-[#11141B]">Total OPEX</span>
-                  <span className="text-[18px] font-extrabold text-[#11141B]">~Rp 500K<span className="text-[14px] font-bold text-[#64748B]">/mo</span></span>
+                  <span className="text-[16px] font-bold text-[#11141B]">{t.model.opex_total}</span>
+                  <span className="text-[18px] font-extrabold text-[#11141B]">~Rp 500K<span className="text-[14px] font-bold text-[#64748B]">{t.model.opex_per_month}</span></span>
                 </div>
               </div>
             </div>
@@ -1001,57 +832,21 @@ export default function App() {
         </div>
       </section>
 
+      {/* ── IMPACT ── */}
       <section id="impact" className="py-24 md:py-32 border-b border-gray-200 bg-gray-50">
         <div className="max-w-[1200px] w-full mx-auto px-6 md:px-12 mb-20 md:mb-24">
           <div className="mb-12 text-left">
-            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">
-              Impact
-            </span>
+            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">{t.impact.label}</span>
           </div>
-
           <div className="mb-20 text-left">
             <h2 className="text-5xl md:text-6xl font-bold leading-[1.1] tracking-tight text-[#11141B]">
-              One trap.<br />
-              <span className="text-[#0D9762]">Three kinds of change.</span>
+              {t.impact.h2_line1}<br />
+              <span className="text-[#0D9762]">{t.impact.h2_line2}</span>
             </h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Economic",
-                subtitle: "Income, not charity.",
-                bullets: [
-                  "Community sorters: Rp 3–4.5M/month revenue pool",
-                  "603 households: Rp 8–12M/year in avoided losses",
-                  "Bogor bamboo suppliers: recurring orders",
-                  "Municipality: reduced emergency response cost",
-                  "Children regain 2–3 school days per flood event"
-                ]
-              },
-              {
-                title: "Ecological",
-                subtitle: "From river to ocean — stopped here.",
-                bullets: [
-                  "205–308 t/year plastic before Jakarta Bay",
-                  "Zero operational carbon — no electricity",
-                  "Net carbon negative vs steel alternatives",
-                  "Zero microplastics from trap degradation",
-                  "Riverbank erosion protection via bamboo roots"
-                ]
-              },
-              {
-                title: "Societal",
-                subtitle: "Families who stay.",
-                bullets: [
-                  "No displacement → community fabric preserved",
-                  "Warung owners keep inventory through flood season",
-                  "Stagnant water eliminated → dengue risk reduced",
-                  "Bottom-up governance, no ministerial referral",
-                  "Replicable: Mumbai's 52 nallah outfalls, Depok's 38 remaining flood points"
-                ]
-              }
-            ].map((panel, idx) => (
+            {impactPanels.map((panel, idx) => (
               <div key={idx} className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-200 flex flex-col hover:shadow-md transition-shadow">
                 <div className="bg-[#0D9762] px-8 py-6 text-white border-b border-[#0D9762]">
                   <h3 className="text-2xl font-bold tracking-tight mb-1">{panel.title}</h3>
@@ -1082,68 +877,42 @@ export default function App() {
               <img src="/comm2.JPG.jpeg" alt="Community near Kali Cabang Timur" className="w-full h-full object-cover" />
             </div>
           </div>
-          <p className="text-center text-[13px] text-[#64748B] font-medium mt-4 px-6 tracking-wide">
-            Pancoran Mas, Depok, Indonesia — the community Kali Guard was built for.
-          </p>
+          <p className="text-center text-[13px] text-[#64748B] font-medium mt-4 px-6 tracking-wide">{t.impact.img_caption}</p>
         </div>
       </section>
 
+      {/* ── SCIENCE ── */}
       <section id="science" className="py-24 md:py-32 border-b border-gray-200">
         <div className="max-w-[1200px] w-full mx-auto px-6 md:px-12">
-          {/* Section Label */}
           <div className="mb-12 text-left">
-            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">
-              The Science
-            </span>
+            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">{t.science.label}</span>
           </div>
-
           <div className="mb-20 text-left">
             <h2 className="text-5xl md:text-6xl font-bold leading-[1.1] tracking-tight text-[#11141B]">
-              Every number<br />
-              <span className="text-[#0D9762]">has a source.</span>
+              {t.science.h2_line1}<br />
+              <span className="text-[#0D9762]">{t.science.h2_line2}</span>
             </h2>
           </div>
 
           <div className="flex flex-col gap-24">
-            {/* SUBSECTION 1 — Climate Evidence */}
+            {/* Climate Evidence */}
             <div>
-              <p className="text-[20px] font-medium italic text-[#11141B] mb-10 pb-4 border-b border-gray-200">
-                "Kali Guard is sized for the climate of 2035, not 2005."
-              </p>
+              <p className="text-[20px] font-medium italic text-[#11141B] mb-10 pb-4 border-b border-gray-200">{t.science.climate_quote}</p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[
-                  { source: "SISWANTO ET AL., 2015 · BAMS", text: "Extreme rainfall events in Jakarta are 2.4× more likely today than 115 years ago." },
-                  { source: "SISWANTO ET AL., 2022 · IJC", text: "Jakarta surface temperature rose 1.6°C since 1866 — 1.4× faster than the global average." },
-                  { source: "LUBIS ET AL., 2022 · GRL", text: "1 January 2020: 377mm in 24 hours — largest in 135-year record; triggered Jabodetabek disaster." },
-                  { source: "KURNIADI ET AL., 2024 · CMIP6", text: "Wet-season extreme rainfall indices increase significantly through 2050 across Java." },
-                  { source: "IPCC AR6, CHAPTER 10 · HIGH CONFIDENCE", text: "Monsoon precipitation will increase across Southeast Asia." }
-                ].map((cite, i) => (
+                {citations.map((cite, i) => (
                   <div key={i} className="bg-[#EFECE6] border-l-[3px] border-[#0D9762] p-6 rounded-r-xl">
-                    <div className="text-[11px] font-bold tracking-[0.1em] text-[#0D9762] uppercase mb-3">
-                      {cite.source}
-                    </div>
-                    <p className="text-[15px] font-medium text-[#11141B] leading-relaxed">
-                      {cite.text}
-                    </p>
+                    <div className="text-[11px] font-bold tracking-[0.1em] text-[#0D9762] uppercase mb-3">{cite.source}</div>
+                    <p className="text-[15px] font-medium text-[#11141B] leading-relaxed">{cite.text}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* SUBSECTION 2 — Bamboo Engineering */}
+            {/* Bamboo Engineering */}
             <div>
-              <p className="text-[20px] font-medium italic text-[#11141B] mb-10 pb-4 border-b border-gray-200">
-                "Why bamboo outperforms steel for this specific application."
-              </p>
+              <p className="text-[20px] font-medium italic text-[#11141B] mb-10 pb-4 border-b border-gray-200">{t.science.bamboo_quote}</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[
-                  { val: "94–220 MPa", label: "Tensile strength, comparable to steel" },
-                  { val: "~0 t CO₂/t", label: "Embodied carbon vs 1.85 for steel" },
-                  { val: "27.79 Mg C", label: "Sequestered per hectare per year" },
-                  { val: "5–7 years", label: "Service life (boron-treated frame)" },
-                  { val: "0 IDR", label: "Scrap value. Cannot be stolen." },
-                  { val: "Zero", label: "Microplastics at end of life" },
-                ].map((spec, i) => (
+                {bambooSpecs.map((spec, i) => (
                   <div key={i} className="flex flex-col">
                     <span className="text-3xl font-bold text-[#11141B] tracking-tight mb-2">{spec.val}</span>
                     <span className="text-[15px] text-[#64748B] leading-snug">{spec.label}</span>
@@ -1152,44 +921,30 @@ export default function App() {
               </div>
             </div>
 
-            {/* SUBSECTION 3 — Proven Methodology */}
+            {/* Proven Methodology */}
             <div>
-               <p className="text-[20px] font-medium italic text-[#11141B] mb-10 pb-4 border-b border-gray-200">
-                "Two precedents operating at scale in the same geography."
-              </p>
+              <p className="text-[20px] font-medium italic text-[#11141B] mb-10 pb-4 border-b border-gray-200">{t.science.precedent_quote}</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-8 hover:border-gray-300 transition-colors">
                   <h4 className="text-xl font-bold text-[#11141B] mb-6">Sungai Watch · Indonesia</h4>
                   <ul className="space-y-3">
-                    <li className="flex items-start gap-3">
-                       <span className="text-[#0D9762] mt-1"><Check className="w-5 h-5" /></span>
-                       <span className="text-[15px] text-[#475569] font-medium">3M+ kg intercepted</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                       <span className="text-[#0D9762] mt-1"><Check className="w-5 h-5" /></span>
-                       <span className="text-[15px] text-[#475569] font-medium">350+ bamboo barriers installed</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                       <span className="text-[#0D9762] mt-1"><Check className="w-5 h-5" /></span>
-                       <span className="text-[15px] text-[#475569] font-medium">Same hydraulic approach, different scale.</span>
-                    </li>
+                    {[t.science.sungai_b1, t.science.sungai_b2, t.science.sungai_b3].map((b, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <span className="text-[#0D9762] mt-1"><Check className="w-5 h-5" /></span>
+                        <span className="text-[15px] text-[#475569] font-medium">{b}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
                 <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-8 hover:border-gray-300 transition-colors">
                   <h4 className="text-xl font-bold text-[#11141B] mb-6">Plastic Fischer · India + Indonesia</h4>
                   <ul className="space-y-3">
-                    <li className="flex items-start gap-3">
-                       <span className="text-[#0D9762] mt-1"><Check className="w-5 h-5" /></span>
-                       <span className="text-[15px] text-[#475569] font-medium">1.9M+ kg intercepted, 2024 Impact Report</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                       <span className="text-[#0D9762] mt-1"><Check className="w-5 h-5" /></span>
-                       <span className="text-[15px] text-[#475569] font-medium">Community-operated revenue model via recyclables.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                       <span className="text-[#0D9762] mt-1"><Check className="w-5 h-5" /></span>
-                       <span className="text-[15px] text-[#475569] font-medium">Not NGO-dependent.</span>
-                    </li>
+                    {[t.science.fischer_b1, t.science.fischer_b2, t.science.fischer_b3].map((b, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <span className="text-[#0D9762] mt-1"><Check className="w-5 h-5" /></span>
+                        <span className="text-[15px] text-[#475569] font-medium">{b}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -1198,108 +953,55 @@ export default function App() {
         </div>
       </section>
 
+      {/* ── TEAM ── */}
       <section id="team" className="py-24 md:py-32 border-b border-gray-200 bg-gray-50">
         <div className="max-w-[1200px] w-full mx-auto px-6 md:px-12 mb-20 md:mb-24">
           <div className="mb-12 text-left">
-            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">
-              Team Arkadia
-            </span>
+            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">{t.team.label}</span>
           </div>
-
           <div className="mb-20 text-left">
             <h2 className="text-5xl md:text-6xl font-bold leading-[1.1] tracking-tight text-[#11141B]">
-              We didn't research<br />
-              <span className="text-[#0D9762]">a problem. We lived one.</span>
+              {t.team.h2_line1}<br />
+              <span className="text-[#0D9762]">{t.team.h2_line2}</span>
             </h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {[
-              {
-                img: "/arnav.png",
-                quote: "The strongest solutions to climate adaptation are often the ones that don't look like technology at all."
-              },
-              {
-                img: "/adiro.png",
-                quote: "I grew up beside Kali Cabang Timur. I watched the same homes flood every year — not from storms, but from trash. This project isn't research. It's home."
-              },
-              {
-                img: "/anushree.png",
-                quote: "Kali Guard works because it respects the community's existing knowledge — it doesn't replace it with something imported."
-              }
-            ].map((member, idx) => (
+            {teamMembers.map((member, idx) => (
               <div key={idx} className="bg-white rounded-3xl p-8 shadow-sm border border-gray-200 flex flex-col h-full hover:shadow-md transition-shadow">
                 <div className="mb-6">
                   <img src={member.img} alt="" className="w-full h-auto rounded-2xl" />
                 </div>
                 <blockquote className="border-t border-gray-100 pt-6 mt-auto">
-                   <p className="text-[15px] font-medium italic text-[#475569] leading-relaxed">"{member.quote}"</p>
+                  <p className="text-[15px] font-medium italic text-[#475569] leading-relaxed">"{member.quote}"</p>
                 </blockquote>
               </div>
             ))}
           </div>
         </div>
-
       </section>
 
+      {/* ── ROADMAP ── */}
       <section id="roadmap" className="py-24 md:py-32 bg-white">
         <div className="max-w-[800px] w-full mx-auto px-6 md:px-12">
-          {/* Section Label */}
           <div className="mb-12 text-center md:text-left">
-            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">
-              Roadmap
-            </span>
+            <span className="text-[12px] font-bold tracking-[0.2em] text-[#64748B] uppercase">{t.roadmap.label}</span>
           </div>
-
           <div className="mb-24 text-center md:text-left">
             <h2 className="text-5xl md:text-6xl font-bold leading-[1.1] tracking-tight text-[#11141B]">
-              From one trap<br />
-              <span className="text-[#0D9762]">to a city-wide network.</span>
+              {t.roadmap.h2_line1}<br />
+              <span className="text-[#0D9762]">{t.roadmap.h2_line2}</span>
             </h2>
           </div>
 
           <div className="relative border-l-2 border-[#E7F6EC] ml-3 md:ml-6 pl-8 md:pl-12 space-y-16">
-            {[
-              {
-                time: "Month 1 · 30 Days",
-                title: "First trap installed",
-                body: "Prototype deployed at Kali Cabang Timur, Jalan Dewi Sartika. Community sorters onboarded. First BSI Rumah Harum recyclable handoff."
-              },
-              {
-                time: "Month 2",
-                title: "Self-sustaining",
-                body: "Revenue covers full operating cost of Rp 500K/mo. No external funding required from this point."
-              },
-              {
-                time: "Month 6",
-                title: "Validated",
-                body: "500+ kg/month captured. Flood documentation published. Sorter income on record. Pilots 2 and 3 deployed."
-              },
-              {
-                time: "Year 1",
-                title: "Blueprint published",
-                body: "DPUPR Depok replication discussion initiated across 38 remaining flood points."
-              },
-              {
-                time: "Year 3–5",
-                title: "City-wide network",
-                body: "15 rivers, 38 flood points across Depok. Municipal service contract. International pilot: Mumbai's 52 nallah outfalls."
-              }
-            ].map((node, i) => (
+            {roadmapNodes.map((node, i) => (
               <div key={i} className="relative group">
-                {/* Timeline dot */}
                 <div className="absolute w-6 h-6 bg-white border-[4px] border-[#0D9762] rounded-full -left-[45px] md:-left-[61px] top-1 group-hover:scale-125 transition-transform duration-300"></div>
-                
                 <div className="flex flex-col">
-                  <span className="text-[12px] font-bold text-[#64748B] tracking-[0.1em] uppercase mb-2">
-                    {node.time}
-                  </span>
-                  <h3 className="text-2xl font-bold text-[#11141B] mb-3">
-                    {node.title}
-                  </h3>
-                  <p className="text-[16px] text-[#475569] leading-relaxed max-w-[500px]">
-                    {node.body}
-                  </p>
+                  <span className="text-[12px] font-bold text-[#64748B] tracking-[0.1em] uppercase mb-2">{node.time}</span>
+                  <h3 className="text-2xl font-bold text-[#11141B] mb-3">{node.title}</h3>
+                  <p className="text-[16px] text-[#475569] leading-relaxed max-w-[500px]">{node.body}</p>
                 </div>
               </div>
             ))}
@@ -1307,19 +1009,19 @@ export default function App() {
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* ── FOOTER ── */}
       <footer className="bg-[#2D5016] text-white pt-16 pb-6">
         <div className="max-w-[1200px] w-full mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
             <div className="flex flex-col reveal text-center md:text-left">
               <img src="/footerlogo.png" alt="Kali Guard" className="h-10 w-auto mb-2 mx-auto md:mx-0 object-contain" />
-              <p className="text-white/60 text-[14px]">Bamboo · Community · Clean Rivers · Resilient Depok</p>
+              <p className="text-white/60 text-[14px]">{t.footer.tagline}</p>
             </div>
             <div className="flex items-center md:justify-center reveal">
               <p className="text-[18px] sm:text-[20px] font-serif italic text-white leading-relaxed text-center text-white/90">
-                "Cleaner Rivers.<br />
-                Resilient Communities.<br />
-                Sustainable Future."
+                {t.footer.quote_line1}<br />
+                {t.footer.quote_line2}<br />
+                {t.footer.quote_line3}
               </p>
             </div>
             <div className="flex flex-col md:items-end text-center md:text-right reveal">
@@ -1332,13 +1034,13 @@ export default function App() {
               <div className="text-[13px] text-white/50 space-y-1">
                 <p>NYU Tandon School of Engineering</p>
                 <p>EGIS Team Up for Climate 2026</p>
-                <p>Phase 2 Finalist · June 11 Jury Presentation</p>
+                <p>{t.footer.finalist}</p>
               </div>
             </div>
           </div>
           <div className="border-t border-white/20 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-white/40 reveal">
             <div className="text-center md:text-left">6°22'42"S 106°49'18"E · Kali Cabang Timur, Pancoran Mas, Depok</div>
-            <div className="text-center md:text-right">"Built to last. Funded by what it collects."</div>
+            <div className="text-center md:text-right">{t.footer.built}</div>
           </div>
         </div>
       </footer>
