@@ -81,14 +81,17 @@ function Dashboard() {
             <p className="text-[12px] lg:text-[13px] text-[#11141B]/80 leading-relaxed mb-3 shrink-0">
               {d.card1_body}
             </p>
-            <div className="flex-1 min-h-[60px] bg-white/30 backdrop-blur-xl border border-white/50 shadow-inner rounded-xl flex items-center justify-center">
-              <div className="flex items-center gap-2 text-[#64748B] font-medium text-[12px] lg:text-[13px]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-map">
-                  <path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" />
-                  <path d="M15 5.764v15" /><path d="M9 3.236v15" />
-                </svg>
-                {d.map_placeholder}
-              </div>
+            <div className="flex-1 min-h-[60px] rounded-xl overflow-hidden">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1000!2d106.81802997116428!3d-6.411317412245444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sid!4v1"
+                width="100%"
+                height="100%"
+                style={{ border: 0, minHeight: '180px' }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Site Location Map"
+              />
             </div>
           </div>
 
